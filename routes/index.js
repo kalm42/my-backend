@@ -12,3 +12,7 @@ router.post(
   twilio.webhook({ validate: shouldValidate }),
   callController.incoming,
 );
+
+router.post('/callme', callController.callme);
+
+router.post('/outbound/:myNumber', callController.connectOutbound);

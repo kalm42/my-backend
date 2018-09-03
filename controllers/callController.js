@@ -1,5 +1,8 @@
 const twilio = require('twilio');
 const mail = require('../handlers/mail');
+const config = require('../handlers/config');
+
+const client = twilio(config.twillio_account_sid, config.twilio_auth_token);
 
 const getIdahoTime = () => {
   // Taken from https://www.techrepublic.com/article/convert-the-local-time-to-another-time-zone-with-this-javascript/
@@ -50,4 +53,56 @@ exports.incoming = (req, res) => {
 
   res.set('Content-Type', 'text/xml');
   return res.send(response.toString());
+};
+
+exports.callme = (req, res) => {
+  // Get the phone number submitted.
+  const leadPhoneNumber = req.body.phone;
+
+  // Make the url to submit the request to twilio.
+  const url = `http://${req.headers.host}/outbound/${encodeURIComponent(
+    config.my_phone,
+  )}`;
+
+  // Prepare the options for the request.
+  const options = {
+    to: leadPhoneNumber,
+    from: config.twilio_number,
+    url,
+  };
+
+  // Place the call to the user.
+  client.calls
+    .create(options)
+    .then((message) => {
+      console.log(message.responseText);
+      res.send({ message: 'ok' });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).send(err);
+    });
+};
+
+// Connecting outbound call to representative
+exports.connectOutbound = (req, res) => {
+  // get lead number
+  const { myNumber } = req.params;
+  const twimlResponse = new twilio.twiml.VoiceResponse();
+
+  twimlResponse.say(
+    'Thank you for filling out the form on my website. Kyle will be on the line in a moment.',
+    { voice: 'alice' },
+  );
+
+  twimlResponse.dial(myNumber);
+
+  twimlResponse.say(
+    'I am sorry. Kyle is not available right now. Please leave a message and he will call you as soon as he can.',
+    { voice: 'alice' },
+  );
+
+  twimlResponse.record({ maxLength: 30 });
+
+  res.send(twimlResponse.toString());
 };
