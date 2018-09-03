@@ -1,4 +1,4 @@
-exports.config = {
+module.exports = {
   my_phone: process.env.MY_PHONE,
   twilio_auth_token: process.env.TWILIO_AUTH_TOKEN,
   twilio_account_sid: process.env.TWILIO_ACCOUNT_SID,

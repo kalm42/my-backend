@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const twilio = require('twilio');
 const callController = require('../controllers/callController');
 // const { catchErrors } = require('../handlers/errorHandlers');
@@ -13,6 +14,8 @@ router.post(
   callController.incoming,
 );
 
-router.post('/callme', callController.callme);
+router.post('/api/callme', cors(), callController.callme);
 
-router.post('/outbound/:myNumber', callController.connectOutbound);
+router.get('/api/outbound/:myNumber', callController.connectOutbound);
+
+module.exports = router;

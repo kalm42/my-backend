@@ -56,11 +56,16 @@ exports.incoming = (req, res) => {
 };
 
 exports.callme = (req, res) => {
+  if (!req.body.phone) {
+    res.status(500).send(new Error('No phone number'));
+    return;
+  }
+
   // Get the phone number submitted.
   const leadPhoneNumber = req.body.phone;
 
   // Make the url to submit the request to twilio.
-  const url = `http://${req.headers.host}/outbound/${encodeURIComponent(
+  const url = `http://${req.headers.host}/api/outbound/${encodeURIComponent(
     config.my_phone,
   )}`;
 
@@ -84,9 +89,8 @@ exports.callme = (req, res) => {
     });
 };
 
-// Connecting outbound call to representative
+// Connecting outbound call to me
 exports.connectOutbound = (req, res) => {
-  // get lead number
   const { myNumber } = req.params;
   const twimlResponse = new twilio.twiml.VoiceResponse();
 

@@ -9,6 +9,7 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.3",
+    "cors": "^2.8.4",
     "dotenv": "^6.0.0",
     "es6-promisify": "^6.0.0",
     "express": "^4.16.3",
@@ -20,5 +21,8 @@
     "eslint": "^5.5.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0"
+  },
+  "now": {
+    "dotenv": ".env.production"
   }
 }

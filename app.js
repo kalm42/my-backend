@@ -1,5 +1,5 @@
 const express = require('express');
-const bodyParser = require('body-parser');
+// const bodyParser = require('body-parser');
 const expressValidator = require('express-validator');
 const routes = require('./routes/index');
 const errorHandlers = require('./handlers/errorHandlers');
@@ -8,14 +8,16 @@ const errorHandlers = require('./handlers/errorHandlers');
 const app = express();
 
 // Parse form data
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.json());
+app.use(express.json());
+// app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded());
 
 // Exposes a bunch of methods for validating data.
 app.use(expressValidator());
 
 // Add our routes
-app.use('/api', routes);
+app.use('/', routes);
 
 // If that above routes didnt work, we 404 them and forward to error handler
 app.use(errorHandlers.notFound);
